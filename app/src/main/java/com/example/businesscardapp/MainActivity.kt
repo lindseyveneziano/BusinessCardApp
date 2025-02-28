@@ -1,5 +1,7 @@
 package com.example.businesscardapp
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -14,8 +16,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -63,7 +67,8 @@ fun BusinessCardScreen() {
                         name = "Lindsey Veneziano",
                         jobTitle = "Kotlin Expert",
                         email = "lindseyveneziano123@gmail.com",
-                        phone = "917-718-9999"
+                        phone = "917-718-9999",
+                        linkedInUrl = "https://www.linkedin.com/in/lindseyveneziano"
                     )
                 }
             }
@@ -83,13 +88,19 @@ fun ProfileImage() {
         Image(
             painter = painterResource(id = R.drawable.profile_picture),
             contentDescription = "Profile Picture",
-            modifier = Modifier.size(100.dp)
+            contentScale = ContentScale.Crop,
+            modifier = Modifier
+                .size(114.dp)
+                .clip(RoundedCornerShape(57.dp))
+                .rotate(90f)
         )
     }
 }
 
 @Composable
-fun BusinessCardText(name: String, jobTitle: String, email: String, phone: String) {
+fun BusinessCardText(name: String, jobTitle: String, email: String, phone: String, linkedInUrl: String) {
+    val context = LocalContext.current
+
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier.padding(horizontal = 12.dp)
@@ -106,20 +117,68 @@ fun BusinessCardText(name: String, jobTitle: String, email: String, phone: Strin
             fontWeight = FontWeight.Medium,
             color = Color(0xFF7B1FA2)
         )
-        Spacer(modifier = Modifier.height(10.dp))
-        Text(
-            text = email,
-            fontSize = 11.sp,
-            fontWeight = FontWeight.Medium,
-            color = Color.Black
-        )
-        Spacer(modifier = Modifier.height(6.dp))
-        Text(
-            text = phone,
-            fontSize = 16.sp,
-            fontWeight = FontWeight.Medium,
-            color = Color.DarkGray
-        )
+        Spacer(modifier = Modifier.height(12.dp))
+
+        Button(
+            onClick = {
+                val intent = Intent(Intent.ACTION_SENDTO, Uri.parse("mailto:$email"))
+                context.startActivity(intent)
+            },
+            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF7B1FA2)),
+            shape = RoundedCornerShape(50.dp),
+            modifier = Modifier
+                .fillMaxWidth(0.8f)
+                .height(48.dp)
+        ) {
+            Text(
+                text = "Email me!",
+                fontSize = 16.sp,
+                fontWeight = FontWeight.Bold,
+                color = Color.White
+            )
+        }
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        Button(
+            onClick = {
+                val intent = Intent(Intent.ACTION_DIAL, Uri.parse("tel:$phone"))
+                context.startActivity(intent)
+            },
+            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF7B1FA2)),
+            shape = RoundedCornerShape(50.dp),
+            modifier = Modifier
+                .fillMaxWidth(0.8f)
+                .height(48.dp)
+        ) {
+            Text(
+                text = "Call me!",
+                fontSize = 16.sp,
+                fontWeight = FontWeight.Bold,
+                color = Color.White
+            )
+        }
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        Button(
+            onClick = {
+                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(linkedInUrl))
+                context.startActivity(intent)
+            },
+            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF7B1FA2)),
+            shape = RoundedCornerShape(50.dp),
+            modifier = Modifier
+                .fillMaxWidth(0.8f)
+                .height(48.dp)
+        ) {
+            Text(
+                text = "LinkedIn",
+                fontSize = 16.sp,
+                fontWeight = FontWeight.Bold,
+                color = Color.White
+            )
+        }
     }
 }
 
